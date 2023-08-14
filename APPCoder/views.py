@@ -12,9 +12,26 @@ def crear_curso(request):
     respuesta=f"Curso creado: {curso.nombre} - {curso.comision}"
     return HttpResponse(respuesta)
 
-def Listar_cursos(request):
+def Listar_cursos(request):   #Listar cusos sin usar template
     cursos=Curso.objects.all()
     respuesta=""
     for curso in cursos:
         respuesta+=f"{curso.nombre} - {curso.comision} <br>"
     return HttpResponse(respuesta)
+
+def inicio (request):
+    return render(request,"inicio.html")
+
+def cursos (request):
+    cursos=Curso.objects.all()
+    return render(request,"cursos.html",{"cursos":cursos})
+
+
+def profesores(request):
+    return render(request,"profesores.html")
+
+def estudiantes (request):
+    return render(request,"estudiantes.html")
+
+def entregables(request):
+    return render(request,"entregables.html")

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Curso   
+from .models import Curso, Profesor   
 from django.http import HttpResponse
 
 # Create your views here.
@@ -28,7 +28,8 @@ def cursos (request):
 
 
 def profesores(request):
-    return render(request,"profesores.html")
+    profesores= Profesor.objects.all()
+    return render(request,"profesores.html",{"profesores":profesores})
 
 def estudiantes (request):
     return render(request,"estudiantes.html")

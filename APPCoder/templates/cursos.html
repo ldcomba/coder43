@@ -1,19 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cursos</title>
-</head>
-<body>
-    <h1>cursos</h1>
 
-    <ul>
-        {% for curso in cursos %}
-            <li> {{curso.nombre}} - {{curso.comision}}</li>
 
-        {% endfor %}
+{% extends "padre.html" %}
+{% load static %}
 
-    </ul>
-</body>
-</html>
+{% block titulo %} ESTA ES LA PAGINA DE LOS CURSOS {% endblock %}
+
+{% block contenido_que_cambia %}
+<ul>
+    {% for curso in cursos %}
+        <h1> {{curso.nombre}} - {{curso.comision}}</h1>
+
+    {% endfor %}
+
+</ul>
+{% endblock %}

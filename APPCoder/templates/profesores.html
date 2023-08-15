@@ -1,11 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>profesores</title>
-</head>
-<body>
-    <h1>profesores</h1>
-</body>
-</html>
+{% extends "padre.html" %}
+{% load static %}
+
+{% block titulo %} ESTA ES LA PAGINA DE LOS PROFESORES {% endblock %}
+
+{% block contenido_que_cambia %}
+    <h1>Este es el contenido de la pagina de PROFESORES</h1>
+    {% for profesor in profesores %}
+    <h2> {{profesor.nombre}} - {{profesor.apellido}}</h2>
+
+    {% endfor %}
+
+
+{% endblock %}

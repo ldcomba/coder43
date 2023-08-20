@@ -1,0 +1,18 @@
+{% extends "padre.html" %}
+{% load static %}
+
+{% block titulo %} ESTE ES UN FORMULARIO DE CURSO {% endblock %}
+
+{% block contenido_que_cambia %}
+    <h2>FORMULARIO</h2>
+    <form action="{% url 'cursoFormulario' %}" method="POST"> {% csrf_token %}
+        <!--input type="number" name="comision" id="comision" placeholder="INSERTE COMISION">
+        <input type="text" name="nombre" id="nombre" placeholder="INSERTE NOMBRE"-->
+        {{ formulario.as_p }}
+        
+        <input type="submit" value="GUARDAR CURSO">
+
+    </form>
+
+    <h3>{{ mensaje }}</h3>
+{% endblock %}

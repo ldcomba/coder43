@@ -1,0 +1,16 @@
+{% extends "padre.html" %}
+{% load static %}
+
+{% block titulo %} ESTA ES LA PAGINA DE Resultado de busqueda por COMISION {% endblock %}
+
+{% block contenido_que_cambia %}
+    <h1>Resultados de busqueda</h1>
+
+{% if cursos %}
+    {% for curso in cursos %}
+      <h3> {{curso.nombre}} - {{curso.comision}}</h3>
+    {% endfor %}
+{% else %}
+    <h1> NO SE ENCONTRARON RESULTADOS </h1>
+{% endif %}
+{% endblock %}

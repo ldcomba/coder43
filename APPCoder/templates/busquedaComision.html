@@ -1,0 +1,17 @@
+{% extends "padre.html" %}
+{% load static %}
+
+{% block titulo %} BUSQUEDA DE COMISIONES {% endblock %}
+
+{% block contenido_que_cambia %}
+    <h1>Busqueda COMISIONES</h1>
+    <form action="{% url 'buscar' %}" method="get">
+        <input type="number" name="comision" id="comision" placeholder="INSERTE COMISION">
+
+        <input type="submit" value="buscar comision">
+
+
+
+    </form>
+    <h2> {{ mensaje }} </h2>
+{% endblock %}

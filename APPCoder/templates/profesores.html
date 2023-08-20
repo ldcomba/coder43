@@ -4,11 +4,16 @@
 {% block titulo %} ESTA ES LA PAGINA DE LOS PROFESORES {% endblock %}
 
 {% block contenido_que_cambia %}
-    <h1>Este es el contenido de la pagina de PROFESORES</h1>
-    {% for profesor in profesores %}
-    <h2> {{profesor.nombre}} - {{profesor.apellido}}</h2>
+    <h1> PROFESORES</h1>
+    
+    <form action="{% url 'profesores' %}" method="POST"> {% csrf_token %}
+        
+        <table> {{formulario.as_table}}  </table>
+        
+        <input type="submit" value="Agregar">
+    </form>
 
-    {% endfor %}
+    <h3> {{ mensaje }} </h3>
 
 
 {% endblock %}

@@ -1,0 +1,18 @@
+{% extends "padre.html" %}
+{% load static %}
+
+{% block titulo %} EDITANDO PROFESOR: {{profesor}} {% endblock %}
+
+{% block contenido_que_cambia %}
+
+
+<h3> {{ mensaje }} </h3>
+    <form action="{% url 'profesorEditar' profesor.id %}" method="POST"> {% csrf_token %}
+        
+        <table> {{formulario.as_table}}  </table>
+        
+        <input type="submit" value="Guardar Cambios">
+    </form>
+
+
+{% endblock %}

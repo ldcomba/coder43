@@ -1,7 +1,10 @@
 from django.shortcuts import render
-from .models import Curso, Profesor   
+from .models import Curso, Profesor, Estudiante   
 from django.http import HttpResponse
 from .forms import CursoForm, ProfesorForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+
 
 # Create your views here.
 def crear_curso(request):
@@ -39,15 +42,73 @@ def profesores(request):
             profesion=info["profesion"]
             profesor=Profesor(nombre=nombre,apellido=apellido,email=email,profesion=profesion)
             profesor.save()
-            formulario_profesor=ProfesorForm()
-            return render(request,"profesores.html", {"mensaje": "Profesor creado","formulario":formulario_profesor})
+            mensaje="Profesor creado"
+            
         else:
-            formulario_profesor=ProfesorForm()
-            return render(request,"profesores.html", {"mensaje": "Datos Invalidos","formulario":formulario_profesor})
+            mensaje="Datos Invalidos"
+        profesores=Profesor.objects.all()
+        formulario_profesor=ProfesorForm()
+        return render(request,"profesores.html", {"mensaje": mensaje,"formulario":formulario_profesor,"profesores":profesores})
     else:
         formulario_profesor=ProfesorForm()
-        ##profesores=Profesor.objects.all()
-        return render(request,"profesores.html",{"formulario":formulario_profesor})
+        profesores=Profesor.objects.all()
+        return render(request,"profesores.html",{"formulario":formulario_profesor,"profesores":profesores})
+    
+def eliminarProfesor(request,id):
+    profesor=Profesor.objects.get(id=id)
+    profesor.delete()
+    formulario_profesor=ProfesorForm()
+    profesores=Profesor.objects.all()
+    mensaje="Profesor eliminado"
+    return render(request,"profesores.html", {"mensaje": mensaje,"formulario":formulario_profesor,"profesores":profesores})
+
+def profesorEditar(request,id):
+    profesor=Profesor.objects.get(id=id)
+    if request.method=="POST":
+        form=ProfesorForm(request.POST)
+        if form.is_valid():
+            info=form.cleaned_data
+            profesor.nombre=info["nombre"]
+            profesor.apellido=info["apellido"]
+            profesor.email=info["email"]
+            profesor.profesion=info["profesion"]
+            profesor.save()
+
+            mensaje="Profesor Editado"
+            formulario_profesor=ProfesorForm()
+            profesores=Profesor.objects.all()
+            return render(request,"profesores.html", {"mensaje": mensaje,"formulario":formulario_profesor,"profesores":profesores})
+    else:
+        
+        formulario_profesor=ProfesorForm(initial={"nombre":profesor.nombre, "apellido":profesor.apellido,"email":profesor.email,"profesion":profesor.profesion})
+        return render(request,"profesorEditar.html", {"formulario":formulario_profesor,"profesor":profesor})
+
+
+class EstudianteList(ListView):
+    model= Estudiante
+    template_name="estudiantes.html"
+
+class EstudianteCreacion(CreateView):
+    model= Estudiante
+    success_url= reverse_lazy("EstudianteList")
+    fields=['nombre','apellido','email']
+
+class EstudianteDetalle(DetailView):
+    model= Estudiante
+    template_name="estudiante_detalle.html"
+
+
+class EstudianteDelete(DeleteView):
+    model= Estudiante
+    success_url= reverse_lazy("EstudianteList")
+
+
+class EstudianteUpdate(UpdateView):
+    model= Estudiante
+    success_url= reverse_lazy("EstudianteList")
+    fields=['nombre','apellido','email']
+
+
 
 def cursoFormulario(request):
     if request.method=="POST":
@@ -65,6 +126,10 @@ def cursoFormulario(request):
     else:
         formulario_curso= CursoForm()
         return render(request,"cursoFormulario.html", {"formulario":formulario_curso})
+
+
+
+
 
 def estudiantes (request):
     return render(request,"estudiantes.html")

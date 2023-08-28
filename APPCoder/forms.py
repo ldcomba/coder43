@@ -10,3 +10,4 @@ class ProfesorForm(forms.Form):
     apellido=forms.CharField(max_length=50)
     email=forms.EmailField()
     profesion=forms.CharField(max_length=50)
+    

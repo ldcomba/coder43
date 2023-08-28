@@ -1,0 +1,12 @@
+{% extends "padre.html" %}
+{% load static %}
+
+{% block titulo %} <h1>FORMULARIO DE ESTUDIANTES</h1> {% endblock %}
+
+{% block contenido_que_cambia %}
+<h1> DATOS DEL ESTUDIANTE</h1>
+
+<p>NOMBRE: <i> {{estudiante.nombre}}</i></p>
+<p>APELLIDO: <i> {{estudiante.apellido}}</i></p>
+<p>EMAIL: <i> {{estudiante.email}}</i></p>
+{% endblock %}

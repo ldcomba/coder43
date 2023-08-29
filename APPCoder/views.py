@@ -1,12 +1,18 @@
 from django.shortcuts import render
 from .models import Curso, Profesor, Estudiante   
 from django.http import HttpResponse
-from .forms import CursoForm, ProfesorForm
+from .forms import CursoForm, ProfesorForm, RegistroUsuarioForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+
+from django.contrib.auth.mixins import LoginRequiredMixin # para vistas basadas en class
+from django.contrib.auth.decorators import login_required # para vistas basadas en Def
 
 
 # Create your views here.
+@login_required
 def crear_curso(request):
     nombre_curso="Programación basica"
     comision_curso=9090
@@ -16,6 +22,7 @@ def crear_curso(request):
     respuesta=f"Curso creado: {curso.nombre} - {curso.comision}"
     return HttpResponse(respuesta)
 
+@login_required
 def Listar_cursos(request):   #Listar cusos sin usar template
     cursos=Curso.objects.all()
     respuesta=""
@@ -26,11 +33,12 @@ def Listar_cursos(request):   #Listar cusos sin usar template
 def inicio (request):
     return render(request,"inicio.html")
 
+@login_required
 def cursos (request):
     cursos=Curso.objects.all()
     return render(request,"cursos.html",{"cursos":cursos})
 
-
+@login_required # para vistas basadas en Def
 def profesores(request):
     if request.method=="POST":
         form=ProfesorForm(request.POST)
@@ -54,6 +62,7 @@ def profesores(request):
         profesores=Profesor.objects.all()
         return render(request,"profesores.html",{"formulario":formulario_profesor,"profesores":profesores})
     
+@login_required    
 def eliminarProfesor(request,id):
     profesor=Profesor.objects.get(id=id)
     profesor.delete()
@@ -62,6 +71,7 @@ def eliminarProfesor(request,id):
     mensaje="Profesor eliminado"
     return render(request,"profesores.html", {"mensaje": mensaje,"formulario":formulario_profesor,"profesores":profesores})
 
+@login_required
 def profesorEditar(request,id):
     profesor=Profesor.objects.get(id=id)
     if request.method=="POST":
@@ -84,32 +94,32 @@ def profesorEditar(request,id):
         return render(request,"profesorEditar.html", {"formulario":formulario_profesor,"profesor":profesor})
 
 
-class EstudianteList(ListView):
+class EstudianteList(LoginRequiredMixin,ListView):
     model= Estudiante
     template_name="estudiantes.html"
 
-class EstudianteCreacion(CreateView):
+class EstudianteCreacion(LoginRequiredMixin,CreateView):
     model= Estudiante
     success_url= reverse_lazy("EstudianteList")
     fields=['nombre','apellido','email']
 
-class EstudianteDetalle(DetailView):
+class EstudianteDetalle(LoginRequiredMixin,DetailView):
     model= Estudiante
     template_name="estudiante_detalle.html"
 
 
-class EstudianteDelete(DeleteView):
+class EstudianteDelete(LoginRequiredMixin,DeleteView):
     model= Estudiante
     success_url= reverse_lazy("EstudianteList")
 
 
-class EstudianteUpdate(UpdateView):
+class EstudianteUpdate(LoginRequiredMixin,UpdateView):
     model= Estudiante
     success_url= reverse_lazy("EstudianteList")
     fields=['nombre','apellido','email']
 
 
-
+@login_required
 def cursoFormulario(request):
     if request.method=="POST":
         ##nombre=request.POST["nombre"]
@@ -130,16 +140,19 @@ def cursoFormulario(request):
 
 
 
-
+@login_required
 def estudiantes (request):
     return render(request,"estudiantes.html")
 
-def entregables(request):
+@login_required
+def entregables( request):
     return render(request,"entregables.html")
 
+@login_required
 def busquedaComison(request):
     return render(request,"busquedaComision.html")
 
+@login_required
 def buscar(request):
     #buscare los datos
     comision=request.GET["comision"]
@@ -148,3 +161,38 @@ def buscar(request):
         return render(request, "resultadosBusqueda.html", {"cursos": cursos})
     else:
         return render(request,"busquedaComision.html",{"mensaje":"Che no ingresaste nada"})
+
+
+def login_request(request):
+    if request.method=="POST":
+        form=AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            info=form.cleaned_data
+            usu=info["username"]
+            clave=info["password"]
+            usuario=authenticate(username=usu, password=clave)
+            if usuario is not None:
+                login(request, usuario)
+                return render(request, "inicio.html", {"mensaje":f"Usuario {usu} logueado correctamente"})
+            else:
+                return render(request, "login.html", {"form":form, "mensaje":"Datos Invalidos"})
+        else:
+            return render(request, "login.html", {"form":form, "mensaje":"Datos Invalidos"})
+    else:
+        form=AuthenticationForm()
+        return render(request, "login.html", {"form":form})
+    
+def register(request):
+        if request.method == 'POST':
+            form = RegistroUsuarioForm(request.POST)
+            if form.is_valid():
+                username=form.cleaned_data['username']
+                form.save()
+                return render(request, "inicio.html", {"mensaje":"Usuario Creado :)"})
+            
+            else:
+                form=RegistroUsuarioForm()
+                return render(request,"register.html", {"form":form,"mensaje":"Datos invalidos"})
+        else:
+            form=RegistroUsuarioForm()
+        return render(request,"register.html", {"form":form})

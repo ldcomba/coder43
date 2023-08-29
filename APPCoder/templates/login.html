@@ -1,0 +1,15 @@
+{% extends "padre.html" %}
+{% load static %}
+
+{% block titulo %} FORMULARIO DE LOGIN {% endblock %}
+
+{% block contenido_que_cambia %}
+   <H3>{{ mensaje }}</H3>
+   <form action="{% url 'login' %}" method="POST"> {% csrf_token %}
+    <table>
+        {{ form.as_table}}
+    </table>
+    <input type="submit" value="INGRESAR">
+   </form>
+{% endblock %}
+

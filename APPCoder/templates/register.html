@@ -1,0 +1,17 @@
+{% extends "padre.html" %}
+{% load static %}
+
+{% block titulo %} FORMULARIO DE LOGIN {% endblock %}
+
+{% block contenido_que_cambia %}
+<style>  .red-text {color: red;}</style>
+   <H3 class="red-text"> {{ mensaje }}</H3>
+
+   <form action="{% url 'register' %}" method="POST"> {% csrf_token %}
+    <table>
+        {{ form.as_table}}
+    </table>
+    <input type="submit" value="REGISTRAR USUARIO">
+   </form>
+{% endblock %}
+
